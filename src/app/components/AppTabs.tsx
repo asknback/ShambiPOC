@@ -11,7 +11,7 @@ export const AppTabs = styled(Tabs)({
 });
 
 export const AppTab = styled((props: StyledTabProps) => <Tab disableRipple {...props} />)(
-  ({ theme }) => ({
+  ({  }) => ({
     color: '#7EA8B3',
     padding: '12px 8px',
     fontSize: '11px',
@@ -31,6 +31,3 @@ export const AppTab = styled((props: StyledTabProps) => <Tab disableRipple {...p
 interface StyledTabProps {
   label: string;
 }
-
-
-

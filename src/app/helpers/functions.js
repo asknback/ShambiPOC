@@ -1,16 +1,6 @@
 import * as constants from './constants';
 import Color from 'tinycolor2';
 
-/**
- *
- * A LOT OF THIS IS STRUCTURED
- * IN A WAY THAT MATCHES THE
- * ORIGINAL LESS FUNCTIONS
- *
- * FEEL FREE TO REFACTOR SOME DAY
- *
- */
-
 // Helper functions
 const checkAlpha = (color) => {
     if (Color(color).getAlpha() < 1) {
@@ -386,7 +376,7 @@ export function createBorder(color, lightDark, intensity) {
     const bOnColor = createOnColor(Color(color).setAlpha(1).toHexString());
     const bLightDark = checkDarkOrLight(bOnColor, lightDark);
 
-    console.log('Border color', bLightDark);
+    // console.log('Border color', bLightDark);
 
     // Dark
     if (bLightDark == 'dark' && intensity == 'subtle') {
