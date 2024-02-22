@@ -1,6 +1,6 @@
 console.clear();
 
-import {importJSONFile}  from './createLocalVariables';
+import {importJSON}  from './createLocalVariables';
 import {exportToJSON}  from './exportJson';
 
 figma.showUI(__html__);
@@ -11,9 +11,9 @@ getExistingCollectionsAndModes();
 
 figma.ui.onmessage = (e) => {
   if (e.type === "CreateLocalVariables") {
-    console.log("createLocalVariables.ts received message", e);
+    // console.log("createLocalVariables.ts received message", e);
     const { selectedCollection, selectedMode, body } = e;
-    importJSONFile({ selectedCollection, selectedMode, body });
+    importJSON({ selectedCollection, selectedMode, body });
     getExistingCollectionsAndModes();
   } 
   else if (e.type === "ExportToJSON") {

@@ -137,14 +137,12 @@ const checkDarkOrLight = (color, lightDark) => {
 export function createLightColor(color) {
     const hsl = getHsl(color);
     const saturation = (hsl.s * 100).toFixed(1);
-    // console.log('Saturation: ', saturation);
 
     if (saturation < 30) {
-        // console.log('saturation is less than 30%');
-        // console.log('NEW LIGHT COLOUR: ', Color({h: hsl.h, s: hsl.s, l: 0.9}).toHslString());
+        // console.log('saturation is less than 30%', saturation, Color({h: hsl.h, s: hsl.s, l: 0.9}).toHexString());
         return Color({h: hsl.h, s: hsl.s, l: 0.9}).toHexString();
     } else {
-        // console.log('saturation is greater than 30%');
+        // console.log('saturation is greater than 30%', saturation, Color({h: hsl.h, s: 0.3, l: 0.9}).toHexString());
         return Color({h: hsl.h, s: 0.3, l: 0.9}).toHexString();
     }
 }

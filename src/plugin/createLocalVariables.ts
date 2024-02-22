@@ -44,9 +44,8 @@ function createVariable( variableMap, collection, modeId, key, valueKey, tokens 
   });
 }
 
-export function importJSONFile({ selectedCollection, selectedMode, body }) {
+export function importJSON({ selectedCollection, selectedMode, body }) {
   const json = body;
-  console.log("importJSONFile");
   const { collection, modeId } = createCollection( selectedCollection, selectedMode );
   const variableMap = loadExistingVariableMap();
 

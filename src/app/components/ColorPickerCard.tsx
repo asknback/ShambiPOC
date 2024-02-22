@@ -65,8 +65,8 @@ export const ColorPickerCard = ({initColor, orgColor, overrideColor, updateColor
   }; 
 
   return (
-    <Box sx={{ margin:'8px'}}>
-      <Box id={id} sx={{ position: 'relative', backgroundColor: cardColor, width: '112px', height: '72px', borderRadius:'4px', boxShadow: 'sm', outline: 'rgba(0, 0, 0, 0.12) solid 1px', outlineOffset: '-1px', overflow:'hidden', cursor:'pointer'}} onClick={openPicker} > 
+    <Box sx={{ flexBasis: '100%'}}>
+      <Box id={id} sx={{ position: 'relative', backgroundColor: cardColor, width: '100%', height: '72px', borderRadius:'4px', boxShadow: 'sm', outline: 'rgba(0, 0, 0, 0.12) solid 1px', outlineOffset: '-1px', overflow:'hidden', cursor:'pointer'}} onClick={openPicker} > 
         <Box sx={{ mt: '44px',backgroundColor: 'white', width: '100%', height: '28px', textAlign:'center', lineHeight:'28px', color: 'rgba(0, 0, 0, 0.56)', fontSize: '11px', borderTop: '1px solid rgba(0, 0, 0, 0.12)', boxShadow: '0px -2px 4px 0px rgba(0, 0, 0, 0.04)'}}> {title} </Box>
         {setShowOverride  && (
           <Sheet color="warning" variant="solid" sx={{ position: 'absolute', bottom: '20px', right:'4px', borderRadius: '4px', width: '4px', height: '4px'}} />

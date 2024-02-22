@@ -4,7 +4,7 @@ import CloseRounded from '@mui/icons-material/CloseRounded';
 
 let collections = {};
 
-export const LocalVariablesPicker = ({}) => {
+export const LocalVariablesPicker = ({semanticColorJson}) => {
 
   const [activeCollectionId, setActiveCollectionId] = React.useState<string | null>(null);
   const [activeCollectionOptions, setActiveCollectionOptions] = React.useState([])
@@ -18,9 +18,8 @@ export const LocalVariablesPicker = ({}) => {
   const selectCollectionAction: SelectStaticProps['action'] = React.useRef(null);
 
   const [inputCollectionValue, setInputCollectionValue] = React.useState<string>('');
-  const [inputModeValue, setInputModeValue] = React.useState<string>('');
+  // const [inputModeValue, setInputModeValue] = React.useState<string>('');
   
-
   React.useEffect(() => {   // console.log('activeCollectionId',activeCollectionId); 
     handleCollectionChange();
   }, [activeCollectionId]);
@@ -32,7 +31,7 @@ export const LocalVariablesPicker = ({}) => {
   }, [activeCollectionName]);
 
   React.useEffect(() => {   // console.log('activeModeId',activeModeId); 
-    handleModeChange();
+    // handleModeChange();
   }, [activeModeId]);
 
   React.useEffect(() => {   // console.log('activeModeOptions',activeModeOptions); 
@@ -45,9 +44,9 @@ export const LocalVariablesPicker = ({}) => {
     setActiveCollectionName(inputCollectionValue);
   }, [inputCollectionValue]);
 
-  React.useEffect(() => {   // console.log('activeModeName',activeModeName);
-    setActiveModeName(inputModeValue);
-  }, [inputModeValue]);
+  // React.useEffect(() => {   // console.log('activeModeName',activeModeName);
+  //   setActiveModeName(inputModeValue);
+  // }, [inputModeValue]);
 
 
   window.onmessage = (event) => {
@@ -65,8 +64,7 @@ export const LocalVariablesPicker = ({}) => {
         collectionOptions.push({ name, value: col.id, });
       });
 
-      console.log('collections',collections)
-
+      // console.log('collections',collections)
       setActiveCollectionOptions(collectionOptions);
     }
   };
@@ -93,38 +91,25 @@ export const LocalVariablesPicker = ({}) => {
         setActiveModeId(modeOptions[0].value);
         // console.log('handleCollectionChange',modeOptions[0].value)
       } else {  
-        
         setActiveModeName(null);
         setActiveModeId(null);
       }
-
     }
   }
 
-  function handleModeChange() {
-    // A bit of change here since we always pick the first option instead of letting the user pick a mode
-    // So we remove this setup  ->   
-    // const currentMode = activeModeOptions.find(option => option.value === activeModeId);
-    // if (!currentMode) {
-    //   setActiveModeName(null);
-    // } else {  
-    //   setActiveModeName(currentMode.name);
-    // }
-
-    // And just auto select the the first instance of the activeModeOptions, if it's populated
-
-    // if (activeModeOptions.length === 0) {
-    //   setActiveModeName(null);
-    // } else {  
-    //   setActiveModeName(activeModeOptions[0].name);
-    //   setActiveModeName(activeModeOptions[0].name);
-    // }
-  }
+  // function handleModeChange() { // If we ever want to use the modes again.
+  //   const currentMode = activeModeOptions.find(option => option.value === activeModeId);
+  //   if (!currentMode) {
+  //     setActiveModeName(null);
+  //   } else {  
+  //     setActiveModeName(currentMode.name);
+  //   }
+  // }
 
   const createLocalVariables = () => {
     let selectedCollection = {};
     let selectedMode = {};
-    const body = bodyJson;
+    const body = semanticColorJson;
 
     if (!activeCollectionId && !activeCollectionName) {
       alert("Please pick a current Collection or create a new.");
@@ -140,7 +125,7 @@ export const LocalVariablesPicker = ({}) => {
     }
 
     setInputCollectionValue('') //reset input fields
-    setInputModeValue('') //reset input fields
+    // setInputModeValue('') //reset input fields
 
     parent.postMessage({ pluginMessage: { selectedCollection, selectedMode, body, type: "CreateLocalVariables", },}, "*");
 
@@ -243,37 +228,3 @@ export const LocalVariablesPicker = ({}) => {
     </Box>
   );
 }
-
-  const bodyJson = 
-    {
-      "color": {
-        "grouptyped": {
-          "$type": "color",
-          "black": { "$value": "#F00" },
-          "danger-deep": { "$value": "{color.valuetyped.danger}" }
-        },
-        "valuetyped": {
-          "red": {
-            "$value": "{color.deep.deep.deep.deep.deep}"
-          },
-          "danger": { "$value": "{color.valuetyped.red}" }
-        },
-        "deep": {"deep": {"deep": {"deep": {"deep": {"$type": "color", "$value": "#FF0000" }}}}}
-      },
-      "spacing": {
-        "$type": "number",
-        "some numbers": {
-          "spacer0": {"$value": 0},
-          "spacerXs": {"$value": 4},
-          "spacerS": {"$value": 8},
-          "spacerM": {"$value": 16},
-          "spacerX": {"$value": 24},
-          "spacerXl": {"$value": 32},
-          "spacerXxl": {"$value": 40},
-          "spacex": {
-            "funniness": {"$value": 0},
-            "cleverness": {"$value": 1}
-          }
-        }
-      }
-    }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Box, Chip, Modal, ModalDialog, ListItem, Stack} from '@mui/joy';
+import { Button, Box, Chip, Modal, ModalDialog, ListItem, Sheet, Stack} from '@mui/joy';
 import {ChromePicker} from 'react-color';
 import Color from 'tinycolor2';
 
@@ -65,14 +65,15 @@ export const ColorPickerListItem = ({initColor, orgColor, overrideColor, updateC
 
   return (
     <ListItem key={title} sx={{ borderTop: '1px solid rgba(0, 0, 0, 0.08)'}} >
-      <Stack direction="row" spacing={0} sx={{}}>
+     <Stack direction="row" alignItems="center" spacing={0} sx={{px:'13px'}}>  {/* 13px to match header 12 + 1 px */}
 
-        <Box sx={{ position: 'relative', backgroundColor: cardColor, width: '48px', height: '32px', borderRadius: '4px', boxShadow: '0px 2px 4px 0px rgba(0, 0, 0, 0.08)', overflow:'hidden', cursor:'pointer'}} onClick={openPicker} > 
-          <Box sx={{ position: 'absolute', bottom: '0', backgroundColor: 'white', width: '100%', height: '12px', borderTop: '1px solid rgba(0, 0, 0, 0.12)'}}>
-            {setShowOverride  && (
-              <Box sx={{ position: 'absolute', bottom: '4px', right:'4px', borderRadius: '4px', backgroundColor: 'red', width: '4px', height: '4px'}} />
+        <Box sx={{ position: 'relative', backgroundColor: cardColor, width: '24px', height: '24px', borderRadius: '2px', outline: 'rgba(0, 0, 0, 0.08) solid 1px', outlineOffset: '-1px', boxShadow: 'inset 0px 1px 2px 0px rgba(0, 0, 0, 0.08)', cursor:'pointer'}} onClick={openPicker} > 
+          {/* <Box sx={{ position: 'absolute', bottom: '0', backgroundColor: 'white', width: '100%', height: '12px', borderTop: '1px solid rgba(0, 0, 0, 0.12)'}}>
+            
+          </Box> */}
+          {setShowOverride  && (
+              <Sheet color="warning" variant="solid" sx={{ position: 'absolute', top: '4px', right:'-8px', borderRadius: '4px', width: '4px', height: '4px'}} />
             )}
-          </Box>
         </Box>
 
         <Modal sx={{ minWidth: '400px', p: '0px' }} open={showPicker} onClose={cancelPicker}>
@@ -98,7 +99,7 @@ export const ColorPickerListItem = ({initColor, orgColor, overrideColor, updateC
           </ModalDialog>
         </Modal>
 
-        <Box sx={{ pl: '12px', lineHeight:'32px', color: 'rgba(0, 0, 0, 0.8)', fontSize: '14px', fontWeight: '300'}}> {title} </Box>
+        <Box sx={{ pl: '12px', lineHeight:'32px', color: 'rgba(0, 0, 0, 0.8)', fontSize: '12px', fontWeight: '300'}}> {title} </Box>
       </Stack>
     </ListItem>
   );
