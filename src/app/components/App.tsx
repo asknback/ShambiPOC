@@ -1,71 +1,37 @@
 import * as React from 'react';
-import _, {set} from 'lodash';
-import {Box, CssBaseline, Sheet, Stack}  from '@mui/joy';
+import {Box, Button, CssBaseline, Sheet, Stack}  from '@mui/joy';
 import {AppTabs, AppTab} from '../components/AppTabs';
 import {PageSemanticColors} from '../components/PageSemanticColors';
 import {PageCustomColors} from '../components/PageCustomColors';
-
 import {LocalVariablesPicker} from './LocalVariablesPicker';
+
 import {updateSemanticColors} from '../semanticTokens';
 import {updateCustomColors} from '../customTokens';
 
 function App() {
-  
+
   // Set colour for ColorPickers
-  const [activeColorProps, setActiveColorProps] = React.useState({ id: '', color: '' });
+  const [activeSemanticColorProps, setActiveSemanticColorProps] = React.useState({ id: '', color: '' });
+  const [activeCustomColorProps, setActiveCustomColorProps] = React.useState({ id: '', color: '' });
 
   React.useEffect(() => {
-    // console.log('activeColorProps: ', activeColorProps);
+    setSemanticColors(updateSemanticColors(activeSemanticColorProps)); 
+  }, [activeSemanticColorProps]);
 
-    setSemanticColors(updateSemanticColors(activeColorProps));  // console.log('activeColorProps', activeColorProps)
-  }, [activeColorProps]);  // This effect runs whenever activeColorProps changes
+  React.useEffect(() => {
+    setCustomColors(updateCustomColors(activeCustomColorProps, semanticColors)); 
+  }, [activeCustomColorProps]);  
 
-  const updateActiveColorProps = (id, activeColor) => {
-    setActiveColorProps({ id: id, color: activeColor });
+  const updateActiveSemanticColorProps = (id, activeColor) => {
+    setActiveSemanticColorProps({ id: id, color: activeColor });
   };
 
-  // Initiate objects for tokens
-  const [semanticColors, setSemanticColors] = React.useState(() => updateSemanticColors(activeColorProps));
-  const [customColors, setCustomColors] = React.useState(() => updateCustomColors(activeColorProps, semanticColors));
-
-  interface ColorTree {
-    [key: string]: { [subKey: string]: {color: string, colorGenerated: string, colorOverride: string} };
-  }
-
-  const semanticColorTree: ColorTree = Object.entries(semanticColors).reduce((acc, [key, value]) => {
-    const path = key.split('/');
-    set(acc, path, value);
-    return acc;
-  }, {}); //console.log('semanticColorTree: ', semanticColorTree);
-
-
-  const customColorTree: ColorTree = Object.entries(customColors).reduce((acc, [key, value]) => {
-    const path = key.split('/');
-    set(acc, path, value);
-    return acc;
-  }, {}); //console.log('customColorTree: ', customColorTree);
-
-
-  // Function to transform the semanticColors into Local Variables structure
-  const getSemanticColorJson = (data: Record<string, { color: string; colorGenerated: string }>) => {
-    const output: any = {
-        Semantic: {}
-    };
-
-    Object.entries(data).forEach(([key, value]) => {
-        const [category, subKey] = key.split('/');
-        if (!output.Semantic[category]) {
-            output.Semantic[category] = {
-                $type: "color"
-            };
-        }
-        output.Semantic[category][subKey] = { $value: value.color };
-    });
-
-    return output;
+  const updateActiveCustomColorProps = (id, activeColor) => {
+    setActiveCustomColorProps({ id: id, color: activeColor });
   };
 
-  const semanticColorJson = getSemanticColorJson(semanticColors);
+  const [semanticColors, setSemanticColors] = React.useState(updateSemanticColors(activeSemanticColorProps));
+  const [customColors, setCustomColors] = React.useState(updateCustomColors(activeCustomColorProps, semanticColors));
 
   // Update Tabs and TapPanels
   const [value, setValue] = React.useState(0);
@@ -81,30 +47,33 @@ function App() {
           <AppTab label="Semantic Colors" />
           <AppTab label="Custom Colors" />
           <AppTab label="Typography" />
-          <AppTab label="Spacing, Sizing & Shadows" />
+          <AppTab label="Spacing, Sizing, Radii & Shadows" />
         </AppTabs>
       </Sheet>
       <Box role="contentWrapper" sx={{ flexGrow: 1, overflow: 'auto' }}>
         <Box role="tabPanel" hidden={value !== 0} >
           <PageSemanticColors 
-            semanticColorTree={semanticColorTree}
-            updateActiveColorProps={updateActiveColorProps} />
+            SemanticColors = {semanticColors}
+            ActiveSemanticColorProps = {updateActiveSemanticColorProps} />
         </Box>
-        <Box role="tabPanel" hidden={value !== 1} sx={{ p: 2 }}>
-          <PageCustomColors  
-            customColorTree={customColorTree}
-            updateActiveColorProps={updateActiveColorProps} />
+        <Box role="tabPanel" hidden={value !== 1} >
+          {/* Test */}
+          <PageCustomColors
+            CustomColors = {customColors}
+            ActiveCustomColorProps = {updateActiveCustomColorProps} />
         </Box>
 
         <Box role="tabPanel" hidden={value !== 2} sx={{ p: 2 }}>Typography</Box>
-        <Box role="tabPanel" hidden={value !== 3} sx={{ p: 2 }}>Spacing, Sizing & Shadows</Box>
+        <Box role="tabPanel" hidden={value !== 3} sx={{ p: 2 }}>Spacing, Sizing, Radii & Shadows</Box>
       </Box>
 
 
       <Stack direction="row" justifyContent="space-between" spacing={0} sx={{bgcolor: '#FFFFFF', zIndex: 2, boxShadow: 'md', borderTop: '1px solid #e8e8e8', px: '16px',fontSize: '11px', lineHeight: '48px', color: 'rgba(0, 0, 0, 0.56)'}}>
         v. 0.012
         <Stack direction="row" spacing={0} alignItems="center" sx={{ marginLeft: 'auto', gap: '4px',}}>
-          <LocalVariablesPicker semanticColorJson={semanticColorJson} />
+          {/* <Button color='primary' size="sm" variant='solid' onClick={createLocalStyles} sx={{height: '8px', fontSize: '11px'}}>Setup Local Styles</Button> */}
+          <LocalVariablesPicker semanticColors={semanticColors} customColors={customColors} />
+
         </Stack>
       </Stack>
     </Box>

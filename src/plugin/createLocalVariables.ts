@@ -1,28 +1,34 @@
-function createCollection( selectedCollection, selectedMode ) {
-  // console.log('selectedCollection.id', selectedCollection.id)
-  if (selectedCollection.id) {  //collection exists
-    const collection = figma.variables.getVariableCollectionById(
-      selectedCollection.id
-    );
-    const modeId = selectedMode.id;
-    if (modeId) { // mode exists
-      return { collection, modeId };
-    } else {// otherwise create new mode
-      const newMode = collection.addMode(selectedMode.name); 
-      return { collection, modeId: newMode };
-    }
-  }
+async function createCollection(selectedCollection, selectedMode) {
+  console.log('selectedCollection', selectedCollection);
   
-  // collection doesn't exist, so mode doesn't exist
-  const collection = figma.variables.createVariableCollection(
-    selectedCollection.name
-  );
 
-  const modeId = collection.modes[0].modeId;
-  collection.renameMode(modeId, selectedMode.name);
+  // Check if the collection exists
+  if (selectedCollection.id) {
+    // Await the async operation to complete and get the collection
+    const collection = await figma.variables.getVariableCollectionByIdAsync(selectedCollection.id);
+    const modeId = selectedMode.id;
 
-  return { collection, modeId };
+    if (modeId) { // If mode exists
+      return { collection, modeId };
+    } else { // Otherwise, create a new mode
+      // Assuming addMode might be an async operation - if it's not, remove await
+      const newMode = await collection.addMode(selectedMode.name); 
+      // Assuming newMode returns the mode ID or an equivalent property
+      return { collection, modeId: newMode.id || newMode };
+    }
+  } else {
+    // If the collection doesn't exist, create a new one
+    const collection = figma.variables.createVariableCollection(selectedCollection.name);
+
+    // Assuming the first mode in the collection can be directly accessed and renamed
+    const modeId = collection.modes[0].modeId;
+    collection.renameMode(modeId, selectedMode.name);
+
+    return { collection, modeId };
+  }
 }
+
+
 
 function createToken( variableMap, collection, modeId, type, name, value ) {
   const existingCollection = variableMap[collection.id];
@@ -44,20 +50,42 @@ function createVariable( variableMap, collection, modeId, key, valueKey, tokens 
   });
 }
 
-export function importJSON({ selectedCollection, selectedMode, body }) {
+
+export async function CreateLocalVariables({ selectedCollection, selectedMode, body }) {
   const json = body;
-  const { collection, modeId } = createCollection( selectedCollection, selectedMode );
-  const variableMap = loadExistingVariableMap();
+  // Await the async operation to complete and destructure its result
+  const { collection, modeId } = await createCollection(selectedCollection, selectedMode);
+  console.log('collection',collection);
+  
+  const variableMap = loadExistingVariableMap(); // Assuming this is synchronous
+  console.log('variableMap',variableMap);
 
   const aliases = {};
   const tokens = {};
   
+  // Assuming the rest of the operations are synchronous. If not, you might need to adjust accordingly.
   Object.entries(json).forEach(([key, object]) => {
-    // console.log("Object.entries(json).forEach", key, object);
-    traverseToken({ variableMap, collection, modeId, type: json.$type, key, object, tokens, aliases, });
+    traverseToken({
+      variableMap,
+      collection,
+      modeId,
+      type: json.$type,
+      key,
+      object,
+      tokens,
+      aliases,
+    });
   });
   
-  processAliases({ variableMap, collection, modeId, aliases, tokens });
+  processAliases({
+    variableMap,
+    collection,
+    modeId,
+    aliases,
+    tokens
+  });
+
+  // If any of the operations above are asynchronous, consider handling them appropriately.
 }
 
 function loadExistingVariableMap() {
@@ -77,7 +105,7 @@ function processAliases({ variableMap, collection, modeId, aliases, tokens }) {
   let generations = aliases.length;
   while (aliases.length && generations > 0) {
     for (let i = 0; i < aliases.length; i++) {
-      const { key, type, valueKey } = aliases[i];
+      const { key, valueKey } = aliases[i];
       const token = tokens[valueKey];
       if (token) {
         aliases.splice(i, 1);

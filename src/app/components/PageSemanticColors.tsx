@@ -1,9 +1,22 @@
 import * as React from 'react';
+import _, {set} from 'lodash';
 import { AccordionGroup, Accordion, AccordionSummary, accordionSummaryClasses, AccordionDetails, accordionDetailsClasses, Box, List, Stack} from '@mui/joy';
 import {ColorPickerCard} from './ColorPickerCard';
 import {ColorPickerListItem} from './ColorPickerListItem';
 
-export const PageSemanticColors = ({semanticColorTree, updateActiveColorProps}) => {
+export const PageSemanticColors = ({SemanticColors, ActiveSemanticColorProps}) => {
+
+  const semanticColors = SemanticColors;
+
+  interface ColorTree {
+    [key: string]: { [subKey: string]: {color: string, colorGenerated: string, colorOverride: string} };
+  }
+
+  const semanticColorTree: ColorTree = Object.entries(semanticColors).reduce((acc, [key, value]) => {
+    const path = key.split('/');
+    set(acc, path, value);
+    return acc;
+  }, {}); 
 
   const highlightedKeys = ['Theme', 'Canvas', 'Surface', 'Highlight', 'Transaction'];
   
@@ -25,7 +38,7 @@ export const PageSemanticColors = ({semanticColorTree, updateActiveColorProps}) 
                 initColor={firstSubObject.color}
                 orgColor ={firstSubObject.colorGenerated}
                 overrideColor ={firstSubObject.colorOverride}
-                updateColorProps={updateActiveColorProps}
+                updateColorProps={ActiveSemanticColorProps}
                 title={key}
                 id={`${key}/${firstSubKey}`} />
             );
@@ -54,7 +67,7 @@ export const PageSemanticColors = ({semanticColorTree, updateActiveColorProps}) 
                         initColor={value.color}
                         orgColor ={value.colorGenerated}
                         overrideColor ={value.colorOverride}
-                        updateColorProps={updateActiveColorProps}
+                        updateColorProps={ActiveSemanticColorProps}
                         title={subKey}
                         id={`${key}/${subKey}`} />
                     );

@@ -16,13 +16,14 @@
     "@mui/icons-material": "^5.15.6",
     "@mui/joy": "^5.0.0-beta.24",
     "@mui/material": "^5.15.5",
+    "figx": "^0.1.3",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
-    "@figma/plugin-typings": "^1.85.0",
+    "@figma/plugin-typings": "^1.87.0",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "css-loader": "^6.7.1",

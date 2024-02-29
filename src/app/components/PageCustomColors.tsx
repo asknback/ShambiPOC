@@ -1,8 +1,21 @@
 import * as React from 'react';
+import _, {set} from 'lodash';
 import { AccordionGroup, Accordion, AccordionSummary, accordionSummaryClasses, AccordionDetails, accordionDetailsClasses, Box, List, Stack} from '@mui/joy';
 import {ColorPickerListItem} from './ColorPickerListItem';
 
-export const PageCustomColors = ({customColorTree, updateActiveColorProps}) => {
+export const PageCustomColors = ({CustomColors, ActiveCustomColorProps}) => {
+  
+  const customColors = CustomColors;
+
+    interface ColorTree {
+      [key: string]: { [subKey: string]: {color: string, colorGenerated: string, colorOverride: string} };
+    }
+  
+    const customColorTree: ColorTree = Object.entries(customColors).reduce((acc, [key, value]) => {
+      const path = key.split('/');
+      set(acc, path, value);
+      return acc;
+    }, {}); 
   
   return (
     <Stack direction="column" sx={{ p: 2}}>
@@ -30,7 +43,7 @@ export const PageCustomColors = ({customColorTree, updateActiveColorProps}) => {
                         initColor={value.color}
                         orgColor ={value.colorGenerated}
                         overrideColor ={value.colorOverride}
-                        updateColorProps={updateActiveColorProps}
+                        updateColorProps={ActiveCustomColorProps}
                         title={subKey}
                         id={`${key}/${subKey}`} />
                     );
